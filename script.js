@@ -1,8 +1,9 @@
 // script.js
 
-let facingUser = true; // インカメラ初期
+let facingUser = true;
 const scene = document.querySelector('a-scene');
 const statusEl = document.getElementById('status');
+const marker = scene.querySelector('a-marker');
 
 // カメラ切替
 document.getElementById('switchCamera').addEventListener('click', () => {
@@ -23,11 +24,28 @@ document.getElementById('capture').addEventListener('click', () => {
   console.log('写真撮影完了');
 });
 
-// マーカー認識イベント
-const marker = scene.querySelector('a-marker');
+// マーカー認識
 marker.addEventListener('markerFound', () => {
   statusEl.textContent = 'マーカー認識中';
 });
 marker.addEventListener('markerLost', () => {
   statusEl.textContent = 'マーカーを探しています';
+});
+
+// カメラ映像が必ず表示されるよう強制
+function forceTransparentRenderer() {
+  if (!scene || !scene.renderer) return;
+  scene.object3D.background = null;
+  scene.renderer.setClearColor(0x000000, 0);
+  scene.renderer.autoClear = true;
+  const canvas = scene.renderer.domElement;
+  if (canvas) canvas.style.background = 'transparent';
+}
+
+scene.addEventListener('loaded', forceTransparentRenderer);
+scene.addEventListener('renderstart', forceTransparentRenderer);
+window.addEventListener('load', () => {
+  setTimeout(forceTransparentRenderer, 500);
+  setTimeout(forceTransparentRenderer, 1500);
+  setTimeout(forceTransparentRenderer, 3000);
 });
