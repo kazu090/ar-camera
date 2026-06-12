@@ -7,19 +7,18 @@ const captureBtn = document.getElementById('capture');
 let facingUser = true;
 let arStarted = false;
 
-const mindarComponent = scene.components['mindar-image'];
-
 // AR開始
 startBtn.addEventListener('click', async () => {
   if (arStarted) return;
+  const mindarComponent = scene.components['mindar-image'];
   if (!mindarComponent) {
-    alert('MindARコンポーネントがロードされていません');
+    alert('MindARコンポーネントがまだロードされていません。ページをリロードしてください');
     return;
   }
   try {
     await mindarComponent.start();
-    statusEl.textContent = 'マーカーを探しています';
     arStarted = true;
+    statusEl.textContent = 'マーカーを探しています';
   } catch (err) {
     alert('カメラの起動に失敗しました: ' + err);
   }
