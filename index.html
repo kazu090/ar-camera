@@ -11,20 +11,19 @@
 </head>
 <body>
 
-  <!-- UI -->
   <div id="overlay">
-    <div id="status">マーカーを探しています</div>
+    <div id="status">カメラを開始してください</div>
+    <button id="startAR">AR開始</button>
     <button id="switchCamera">カメラ切替</button>
     <button id="capture">写真撮影</button>
   </div>
 
-  <!-- AR Scene -->
-  <a-scene embedded arjs="sourceType: user; debugUIEnabled: true;">
+  <a-scene embedded arjs="sourceType: user; debugUIEnabled: true" vr-mode-ui="enabled: false">
     <a-assets>
       <img id="character" src="assets/character.png">
     </a-assets>
 
-    <a-marker type="pattern" url="assets/marker.patt">
+    <a-marker id="marker" type="pattern" url="assets/marker.patt">
       <a-image src="#character" position="0 0 0.1" scale="0.5 0.5 0.5"></a-image>
     </a-marker>
 
