@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>フィジタルARデモ</title>
 
+  <!-- A-Frame -->
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <!-- MindAR -->
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+  <!-- UIオーバーレイ -->
   <div id="overlay">
     <div id="status">カメラを開始してください</div>
     <button id="startAR">AR開始</button>
@@ -18,11 +21,13 @@
     <button id="capture">写真撮影</button>
   </div>
 
+  <!-- A-Frameシーン -->
   <a-scene embedded mindar-image="imageTargetSrc: assets/marker.mind; maxTrack: 1; autoStart: false" vr-mode-ui="enabled: false">
     <a-assets>
       <img id="character" src="assets/character.png">
     </a-assets>
 
+    <!-- マーカー認識 -->
     <a-marker mindar-image-target="targetIndex: 0">
       <a-image src="#character" position="0 0 0.1" scale="0.5 0.5 0.5"></a-image>
     </a-marker>
