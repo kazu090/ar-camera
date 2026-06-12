@@ -1,0 +1,31 @@
+/* style.css */
+
+body, html {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: sans-serif;
+}
+
+button {
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  background-color: #7b5fff;
+  color: white;
+  z-index: 999;
+}
+
+#switchCamera {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+}
+
+#capture {
+  position: fixed;
+  top: 50px;
+  left: 10px;
+}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>AR Camera Demo</title>
+  <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ar-js-org@4.4.0/aframe/build/aframe-ar.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body style="margin: 0; overflow: hidden;">
+
+<!-- カメラ切替ボタン -->
+<button id="switchCamera" style="position: fixed; top: 10px; left: 10px; z-index: 999;">カメラ切替</button>
+<!-- 写真撮影ボタン -->
+<button id="capture" style="position: fixed; top: 50px; left: 10px; z-index: 999;">撮影</button>
+
+<a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false;'>
+  <!-- マーカー -->
+  <a-marker type="pattern" url="assets/marker.patt">
+    <!-- 上半身画像を表示 -->
+    <a-image src="assets/character.png" position="0 0 0" rotation="0 0 0" scale="1 1 1"></a-image>
+  </a-marker>
+
+  <!-- カメラ -->
+  <a-entity camera></a-entity>
+</a-scene>
+
+<script src="script.js"></script>
+</body>
+</html>
