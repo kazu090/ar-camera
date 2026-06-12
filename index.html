@@ -2,48 +2,34 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>AR Camera Demo</title>
-  <!-- A-Frame + AR.js -->
-  <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>フィジタルARデモ</title>
+
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/ar-js-org@4.4.0/aframe/build/aframe-ar.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
-<body style="margin:0; overflow:hidden;">
+<body>
 
-  <!-- カメラ切替ボタン -->
-  <button id="switchCamera">カメラ切替</button>
-  <!-- 写真撮影ボタン -->
-  <button id="capture">撮影</button>
+  <!-- ステータスと操作UI -->
+  <div id="overlay">
+    <div id="status">マーカーを探しています</div>
+    <button id="switchCamera">カメラ切替</button>
+    <button id="capture">写真撮影</button>
+  </div>
 
-  <!-- ARシーン -->
   <a-scene embedded arjs="sourceType: user; debugUIEnabled: true;">
-    <!-- マーカー -->
+    <a-assets>
+      <img id="character" src="assets/character.png">
+    </a-assets>
+
     <a-marker type="pattern" url="assets/marker.patt">
-      <!-- キャラクター画像 -->
-      <a-image src="assets/character.png" position="0 0 0" scale="0.5 0.5 0.5"></a-image>
+      <a-image src="#character" position="0 0 0.1" scale="0.5 0.5 0.5"></a-image>
     </a-marker>
-    <!-- カメラ -->
+
     <a-entity camera></a-entity>
   </a-scene>
 
-  <script>
-    // カメラ切替
-    let facingUser = true; // 初期値：インカメラ
-    document.getElementById('switchCamera').addEventListener('click', () => {
-      facingUser = !facingUser;
-      const scene = document.querySelector('a-scene');
-      const camera = scene.querySelector('a-entity[camera]');
-      camera.setAttribute('arjs', 'sourceType', facingUser ? 'user' : 'environment');
-    });
-
-    // 写真撮影
-    document.getElementById('capture').addEventListener('click', () => {
-      const canvas = document.querySelector('canvas');
-      const link = document.createElement('a');
-      link.download = 'ar-photo.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
