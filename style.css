@@ -35,10 +35,6 @@ button {
   color: white;
 }
 
-#switchCamera {
-  background-color: #7b5fff;
-}
-
-#capture {
-  background-color: #ff5f87;
-}
+#startAR { background-color: #4CAF50; }
+#switchCamera { background-color: #7b5fff; }
+#capture { background-color: #ff5f87; }
