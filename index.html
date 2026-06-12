@@ -11,13 +11,14 @@
 </head>
 <body>
 
-  <!-- ステータスと操作UI -->
+  <!-- UI -->
   <div id="overlay">
     <div id="status">マーカーを探しています</div>
     <button id="switchCamera">カメラ切替</button>
     <button id="capture">写真撮影</button>
   </div>
 
+  <!-- AR Scene -->
   <a-scene embedded arjs="sourceType: user; debugUIEnabled: true;">
     <a-assets>
       <img id="character" src="assets/character.png">
