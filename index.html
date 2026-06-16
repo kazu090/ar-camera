@@ -2,12 +2,34 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>フィジタルARデモ</title>
+
+  <!-- カメラ指定はMindAR読み込み前に準備する -->
+  <script>
+    (function () {
+      const params = new URLSearchParams(location.search);
+      window.AR_CAMERA_FACING = params.get("cam") === "user" ? "user" : "environment";
+
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        const originalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+        navigator.mediaDevices.getUserMedia = function (constraints) {
+          const next = Object.assign({}, constraints || {});
+          const currentVideo = next.video;
+
+          if (currentVideo === true || currentVideo == null) {
+            next.video = { facingMode: { ideal: window.AR_CAMERA_FACING } };
+          } else if (typeof currentVideo === "object") {
+            next.video = Object.assign({}, currentVideo, {
+              facingMode: { ideal: window.AR_CAMERA_FACING }
+            });
+          }
+
+          return originalGetUserMedia(next);
+        };
+      }
+    })();
+  </script>
 
   <!-- A-Frame -->
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
@@ -15,23 +37,20 @@
   <!-- MindAR for A-Frame -->
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
-  <!-- CSS：キャッシュ対策で v を付ける -->
-  <link rel="stylesheet" href="./style.css?v=5" />
+  <link rel="stylesheet" href="./style.css?v=10" />
 </head>
 
 <body>
-  <!-- 操作用UI -->
   <div id="overlay">
-    <div id="status">AR開始を押してください</div>
-    <button id="startAR" type="button">AR開始</button>
+    <div id="status">カメラを起動しています</div>
+    <button id="startAR" type="button">再読み込み</button>
     <button id="switchCamera" type="button">カメラ切替</button>
     <button id="capture" type="button">写真撮影</button>
   </div>
 
-  <!-- MindARシーン -->
   <a-scene
     id="arScene"
-    mindar-image="imageTargetSrc: ./assets/marker.mind; maxTrack: 1; autoStart: false; filterMinCF: 0.0001; filterBeta: 0.01;"
+    mindar-image="imageTargetSrc: ./assets/marker.mind; maxTrack: 1; filterMinCF: 0.0001; filterBeta: 0.01; warmupTolerance: 5; missTolerance: 8;"
     color-space="sRGB"
     renderer="alpha: true; antialias: true; colorManagement: true; physicallyCorrectLights: true;"
     vr-mode-ui="enabled: false"
@@ -44,7 +63,6 @@
       <img id="character" src="./assets/character.png" crossorigin="anonymous" />
     </a-assets>
 
-    <!-- カメラ -->
     <a-camera
       id="camera"
       position="0 0 0"
@@ -52,21 +70,18 @@
       cursor="fuse: false; rayOrigin: mouse;"
     ></a-camera>
 
-    <!-- MindARのターゲット。a-markerではなくa-entityを使う -->
     <a-entity id="target" mindar-image-target="targetIndex: 0">
-      <!-- 右後ろに出したいので、X方向を少し右へ -->
       <a-image
         id="characterImage"
         src="#character"
-        position="0.35 0 0.08"
+        position="0.38 0.02 0.08"
         rotation="0 0 0"
-        scale="0.8 0.8 0.8"
-        transparent="true"
+        scale="0.85 0.85 0.85"
+        material="transparent: true; opacity: 1; alphaTest: 0.01"
       ></a-image>
     </a-entity>
   </a-scene>
 
-  <!-- JS：キャッシュ対策で v を付ける -->
-  <script src="./script.js?v=5"></script>
+  <script src="./script.js?v=10"></script>
 </body>
 </html>
