@@ -5,18 +5,16 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: transparent !important;
+  background: #222;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   touch-action: none;
 }
 
-/* スマホでbodyがスクロール・縮小されないよう固定 */
 body {
   position: fixed;
   inset: 0;
 }
 
-/* MindAR / A-Frame が生成するカメラ映像 */
 video {
   position: fixed !important;
   top: 0 !important;
@@ -28,7 +26,6 @@ video {
   background: transparent !important;
 }
 
-/* A-Frameシーン */
 a-scene {
   position: fixed !important;
   inset: 0 !important;
@@ -38,7 +35,6 @@ a-scene {
   background: transparent !important;
 }
 
-/* A-Frameのcanvas */
 canvas,
 .a-canvas {
   position: fixed !important;
@@ -50,17 +46,17 @@ canvas,
   background: transparent !important;
 }
 
-/* A-Frame標準のVRボタンを強制非表示 */
 .a-enter-vr,
 .a-enter-ar,
-.a-orientation-modal {
+.a-orientation-modal,
+.a-enter-vr-button,
+.a-enter-ar-button {
   display: none !important;
   pointer-events: none !important;
   opacity: 0 !important;
   visibility: hidden !important;
 }
 
-/* 操作用UI */
 #overlay {
   position: fixed;
   top: calc(12px + env(safe-area-inset-top));
@@ -72,7 +68,6 @@ canvas,
   pointer-events: auto;
 }
 
-/* ステータス表示 */
 #status {
   padding: 7px 11px;
   background: rgba(0, 0, 0, 0.68);
@@ -84,7 +79,6 @@ canvas,
   max-width: 240px;
 }
 
-/* ボタン共通 */
 button {
   width: 150px;
   padding: 10px 12px;
@@ -99,7 +93,6 @@ button {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ボタン色 */
 #startAR {
   background-color: #18a058;
 }
@@ -112,18 +105,15 @@ button {
   background-color: #ff5f87;
 }
 
-/* 押した時 */
 button:active {
   transform: scale(0.97);
   opacity: 0.88;
 }
 
-/* 起動前・エラー時の見やすさ用 */
-body:not(.ar-started) {
-  background: #222 !important;
-}
-
-/* AR起動後は背景を透明に戻す */
 body.ar-started {
   background: transparent !important;
+}
+
+body:not(.ar-started) #capture {
+  opacity: 0.75;
 }
