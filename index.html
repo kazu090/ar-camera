@@ -20,7 +20,11 @@
     <button id="capture">写真撮影</button>
   </div>
 
-  <a-scene embedded mindar-image="imageTargetSrc: assets/marker.mind; maxTrack: 1; autoStart: false" vr-mode-ui="enabled: false">
+  <a-scene
+    embedded
+    mindar-image="imageTargetSrc: assets/marker.mind; maxTrack: 1; autoStart: false;"
+    vr-mode-ui="enabled: false"
+  >
     <a-assets>
       <img id="character" src="assets/character.png">
     </a-assets>
@@ -32,6 +36,63 @@
     <a-entity camera></a-entity>
   </a-scene>
 
-  <script src="script.js"></script>
+  <script>
+    const startBtn = document.getElementById('startAR');
+    const switchBtn = document.getElementById('switchCamera');
+    const captureBtn = document.getElementById('capture');
+    const statusEl = document.getElementById('status');
+    const sceneEl = document.querySelector('a-scene');
+
+    let arStarted = false;
+    let facingUser = true;
+
+    // AR開始ボタン
+    startBtn.addEventListener('click', async () => {
+      if (arStarted) return;
+      const mindarSystem = sceneEl.systems['mindar-image'];
+      if (!mindarSystem) {
+        alert('MindARがロードされていません。ページをリロードしてください');
+        return;
+      }
+
+      try {
+        await mindarSystem.start(); // カメラ起動＋AR開始
+        arStarted = true;
+        statusEl.textContent = 'マーカーを探しています';
+      } catch (err) {
+        alert('カメラの起動に失敗しました: ' + err);
+      }
+    });
+
+    // カメラ切替
+    switchBtn.addEventListener('click', async () => {
+      if (!arStarted) return;
+      facingUser = !facingUser;
+      const mindarSystem = sceneEl.systems['mindar-image'];
+      if (!mindarSystem) return;
+      mindarSystem.arController.video.srcObject.getTracks().forEach(track => track.stop());
+      await mindarSystem.arController._startCamera(facingUser ? "user" : "environment");
+    });
+
+    // 写真撮影
+    captureBtn.addEventListener('click', () => {
+      const canvas = sceneEl.renderer.domElement;
+      if (!canvas) return alert('カメラ映像が準備できていません');
+      const link = document.createElement('a');
+      link.download = 'ar-photo.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    });
+
+    // マーカー認識イベント
+    const markerEntity = sceneEl.querySelector('a-marker');
+    markerEntity.addEventListener('targetFound', () => {
+      statusEl.textContent = 'マーカー認識中';
+    });
+    markerEntity.addEventListener('targetLost', () => {
+      statusEl.textContent = 'マーカーを探しています';
+    });
+  </script>
+
 </body>
 </html>
