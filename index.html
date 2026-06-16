@@ -1,98 +1,72 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
+
   <title>フィジタルARデモ</title>
 
   <!-- A-Frame -->
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-  <!-- MindAR -->
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
 
+  <!-- MindAR for A-Frame -->
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+  <!-- CSS：キャッシュ対策で v を付ける -->
+  <link rel="stylesheet" href="./style.css?v=5" />
+</head>
+
+<body>
+  <!-- 操作用UI -->
   <div id="overlay">
-    <div id="status">カメラを開始してください</div>
-    <button id="startAR">AR開始</button>
-    <button id="switchCamera">カメラ切替</button>
-    <button id="capture">写真撮影</button>
+    <div id="status">AR開始を押してください</div>
+    <button id="startAR" type="button">AR開始</button>
+    <button id="switchCamera" type="button">カメラ切替</button>
+    <button id="capture" type="button">写真撮影</button>
   </div>
 
+  <!-- MindARシーン -->
   <a-scene
-    embedded
-    mindar-image="imageTargetSrc: assets/marker.mind; maxTrack: 1; autoStart: false;"
+    id="arScene"
+    mindar-image="imageTargetSrc: ./assets/marker.mind; maxTrack: 1; autoStart: false; filterMinCF: 0.0001; filterBeta: 0.01;"
+    color-space="sRGB"
+    renderer="alpha: true; antialias: true; colorManagement: true; physicallyCorrectLights: true;"
     vr-mode-ui="enabled: false"
+    xr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false"
+    loading-screen="enabled: false"
+    embedded
   >
-    <a-assets>
-      <img id="character" src="assets/character.png">
+    <a-assets timeout="20000">
+      <img id="character" src="./assets/character.png" crossorigin="anonymous" />
     </a-assets>
 
-    <a-marker mindar-image-target="targetIndex: 0">
-      <a-image src="#character" position="0 0 0.1" scale="0.5 0.5 0.5"></a-image>
-    </a-marker>
+    <!-- カメラ -->
+    <a-camera
+      id="camera"
+      position="0 0 0"
+      look-controls="enabled: false"
+      cursor="fuse: false; rayOrigin: mouse;"
+    ></a-camera>
 
-    <a-entity camera></a-entity>
+    <!-- MindARのターゲット。a-markerではなくa-entityを使う -->
+    <a-entity id="target" mindar-image-target="targetIndex: 0">
+      <!-- 右後ろに出したいので、X方向を少し右へ -->
+      <a-image
+        id="characterImage"
+        src="#character"
+        position="0.35 0 0.08"
+        rotation="0 0 0"
+        scale="0.8 0.8 0.8"
+        transparent="true"
+      ></a-image>
+    </a-entity>
   </a-scene>
 
-  <script>
-    const startBtn = document.getElementById('startAR');
-    const switchBtn = document.getElementById('switchCamera');
-    const captureBtn = document.getElementById('capture');
-    const statusEl = document.getElementById('status');
-    const sceneEl = document.querySelector('a-scene');
-
-    let arStarted = false;
-    let facingUser = true;
-
-    // AR開始ボタン
-    startBtn.addEventListener('click', async () => {
-      if (arStarted) return;
-      const mindarSystem = sceneEl.systems['mindar-image'];
-      if (!mindarSystem) {
-        alert('MindARがロードされていません。ページをリロードしてください');
-        return;
-      }
-
-      try {
-        await mindarSystem.start(); // カメラ起動＋AR開始
-        arStarted = true;
-        statusEl.textContent = 'マーカーを探しています';
-      } catch (err) {
-        alert('カメラの起動に失敗しました: ' + err);
-      }
-    });
-
-    // カメラ切替
-    switchBtn.addEventListener('click', async () => {
-      if (!arStarted) return;
-      facingUser = !facingUser;
-      const mindarSystem = sceneEl.systems['mindar-image'];
-      if (!mindarSystem) return;
-      mindarSystem.arController.video.srcObject.getTracks().forEach(track => track.stop());
-      await mindarSystem.arController._startCamera(facingUser ? "user" : "environment");
-    });
-
-    // 写真撮影
-    captureBtn.addEventListener('click', () => {
-      const canvas = sceneEl.renderer.domElement;
-      if (!canvas) return alert('カメラ映像が準備できていません');
-      const link = document.createElement('a');
-      link.download = 'ar-photo.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    });
-
-    // マーカー認識イベント
-    const markerEntity = sceneEl.querySelector('a-marker');
-    markerEntity.addEventListener('targetFound', () => {
-      statusEl.textContent = 'マーカー認識中';
-    });
-    markerEntity.addEventListener('targetLost', () => {
-      statusEl.textContent = 'マーカーを探しています';
-    });
-  </script>
-
+  <!-- JS：キャッシュ対策で v を付ける -->
+  <script src="./script.js?v=5"></script>
 </body>
 </html>
